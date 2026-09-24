@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: library-management-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false # Set in Render Dashboard for security
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false # Set in Render Dashboard for security
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false # Set in Render Dashboard for security
+      - key: JWT_SECRET
+        sync: false # Set in Render Dashboard for security
+      - key: JWT_EXPIRATION_MS
+        value: "86400000"
+      - key: JWT_REFRESH_EXPIRATION_MS
+        value: "604800000"
