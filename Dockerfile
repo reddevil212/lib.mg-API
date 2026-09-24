@@ -32,8 +32,8 @@ COPY --from=builder /app/build/libs/main-*.jar app.jar
 # Expose server port
 EXPOSE 8080
 
-# Environment variables
-ENV JAVA_OPTS="-Xms256m -Xmx512m"
+# Environment variables (prefer IPv4 stack for cloud container network compatibility)
+ENV JAVA_OPTS="-Xms256m -Xmx512m -Djava.net.preferIPv4Stack=true"
 
 # Launch application
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
