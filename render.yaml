@@ -4,7 +4,10 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: free
+    healthCheckPath: /
     envVars:
+      - key: PORT
+        value: "8080"
       - key: SPRING_DATASOURCE_URL
         sync: false # Set in Render Dashboard for security
       - key: SPRING_DATASOURCE_USERNAME
@@ -17,3 +20,4 @@ services:
         value: "86400000"
       - key: JWT_REFRESH_EXPIRATION_MS
         value: "604800000"
+
