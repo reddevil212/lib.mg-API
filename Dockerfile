@@ -1,39 +1,37 @@
-# Stage 1: Build the application
-FROM eclipse-temurin:17-jdk-alpine AS builder
+# Multi-stage Dockerfile for Spring Boot deployment on Render
+
+# Step 1: Build stage
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
-# Copy gradle wrapper and configuration files for dependency caching
+# Copy Gradle wrapper and configuration files first for Docker layer caching
 COPY gradlew .
 COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
+COPY build.gradle settings.gradle ./
 
-# Grant execute permission for gradlew
-RUN chmod +x ./gradlew
+# Make wrapper executable
+RUN chmod +x gradlew
 
-# Pre-fetch dependencies using the container's installed JDK
-RUN ./gradlew dependencies --no-daemon -Porg.gradle.java.installations.auto-download=false
+# Resolve dependencies
+RUN ./gradlew dependencies --no-daemon || true
 
-# Copy source code and build the application JAR
+# Copy source files and build executable jar
 COPY src src
-RUN ./gradlew bootJar --no-daemon -x test -Porg.gradle.java.installations.auto-download=false
+RUN ./gradlew bootJar -x test --no-daemon
 
-# Stage 2: Create lightweight production runtime image
+# Step 2: Production Runtime Stage
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
-# Create a non-root user for security
+# Run as non-root user
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 
-# Copy the compiled executable JAR from the builder stage
-COPY --from=builder /app/build/libs/main-*.jar app.jar
+# Copy built app.jar from build stage
+COPY --from=build /app/build/libs/app.jar app.jar
 
-# Expose server port
+# Render dynamically sets PORT environment variable
+ENV PORT=8080
 EXPOSE 8080
 
-# Environment variables (prefer IPv4 stack for cloud container network compatibility)
-ENV JAVA_OPTS="-Xms256m -Xmx512m -Djava.net.preferIPv4Stack=true"
-
-# Launch application
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]

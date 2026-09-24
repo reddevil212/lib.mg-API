@@ -1,23 +1,11 @@
 services:
   - type: web
-    name: library-management-api
-    runtime: docker
-    dockerfilePath: ./Dockerfile
+    name: springboot-library-api
+    env: docker
     plan: free
-    healthCheckPath: /
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: PORT
-        value: "8080"
-      - key: SPRING_DATASOURCE_URL
-        sync: false # Set in Render Dashboard for security
-      - key: SPRING_DATASOURCE_USERNAME
-        sync: false # Set in Render Dashboard for security
-      - key: SPRING_DATASOURCE_PASSWORD
-        sync: false # Set in Render Dashboard for security
-      - key: JWT_SECRET
-        sync: false # Set in Render Dashboard for security
-      - key: JWT_EXPIRATION_MS
-        value: "86400000"
-      - key: JWT_REFRESH_EXPIRATION_MS
-        value: "604800000"
-
+        value: 8080
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update

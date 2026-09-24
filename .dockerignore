@@ -1,8 +1,9 @@
 .gradle
 build
-.idea
-*.iml
 .git
 .gitignore
-HELP.md
-out
+.idea
+*.bin
+*.log
+local.properties
+.env
