@@ -135,4 +135,12 @@ public class UserService {
                 .map(user -> modelMapper.map(user, UserResponseDto.class))
                 .collect(Collectors.toList());
     }
+
+    public List<UserResponseDto> searchUsersByName(String name) {
+
+        return userRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(user -> modelMapper.map(user, UserResponseDto.class))
+                .collect(Collectors.toList());
+    }
 }

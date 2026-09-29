@@ -1,5 +1,6 @@
 package com.lib.mg.repository;
 
+import com.lib.mg.Dto.UserResponseDto;
 import com.lib.mg.entity.UserInfo;
 import com.lib.mg.entity.UserRole;
 import com.lib.mg.enums.Roles;
@@ -15,4 +16,5 @@ public interface UserRepository extends JpaRepository<UserInfo, Long> {
     List<UserInfo> findByRole(UserRole role);
     List<UserInfo> findByRoleRoleId(Long roleId);
     List<UserInfo> findByRoleRoleName(Roles roleName);
+    List<UserInfo> findByNameContainingIgnoreCase(String name);
 }
